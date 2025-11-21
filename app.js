@@ -6,13 +6,14 @@ import cors from 'cors';
 import swaggerUI from 'swagger-ui-express';
 import { createServer } from 'http';
 import authRouter from "./routes/auth.routes.js";
+import stockRouter from "./routes/stock.routes.js";
+import authenticatedSocketUser from "./middleware/socketAuth.js"
 import notFoundMiddleware from "./middleware/not-found.js"
 import errorHandlerMiddleware from "./middleware/error-handler.js"
 
 
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import notFound from "./middleware/not-found.js";
 import connectDb from "./config/connect.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -40,6 +41,7 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 // routes
 
 app.use("/auth", authRouter);
+app.use("/stocks", authenticatedSocketUser, stockRouter);
 
 // middlewares
 

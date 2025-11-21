@@ -121,31 +121,8 @@ UserSchema.statics.updatePassword = async function (email, newPassword) {
 }
 
 
-UserSchema.methods.comparePassword = async function (enteredPin){
+UserSchema.methods.comparePassword = async function (enteredPw){
     if(this.blocked_until_password && this.blocked_until_password > new Date()) {
-        throw new UnauthenticatedError("Invalid login attempts exceeded, Try again in 30 minutes");
-    }
-
-    const isMatch = await bcrypt.compare(enteredPin, this.login_pin);
-    if(!isMatch) {
-        this.wrong_pin_attempts += 1;
-        if(this.wrong_pin_attempts >= 3) {
-            this.blocked_until_pin = new Date(Date.now() + 30 * 60 * 1000);
-            await this.save();
-            this.wrong_pin_attempts = 0;
-        }
-        await this.save();
-    }else{
-        this.wrong_pin_attempts = 0;
-        this.blocked_until_pin = null;
-        await this.save();
-    }
-    return isMatch;
-}
-
-
-UserSchema.methods.comparePin = async function comparePin(enteredPw){
-    if(this.blocked_until_pin && this.blocked_until_pin > new Date()) {
         throw new UnauthenticatedError("Invalid login attempts exceeded, Try again in 30 minutes");
     }
 
@@ -161,6 +138,29 @@ UserSchema.methods.comparePin = async function comparePin(enteredPw){
     }else{
         this.wrong_password_attempts = 0;
         this.blocked_until_password = null;
+        await this.save();
+    }
+    return isMatch;
+}
+
+
+UserSchema.methods.comparePin = async function comparePin(enteredPw){
+    if(this.blocked_until_pin && this.blocked_until_pin > new Date()) {
+        throw new UnauthenticatedError("Invalid login attempts exceeded, Try again in 30 minutes");
+    }
+
+    const isMatch = await bcrypt.compare(enteredPw, this.password);
+    if(!isMatch) {
+        this.wrong_pin_attempts += 1;
+        if(this.wrong_pin_attempts >= 3) {
+            this.blocked_until_pin = new Date(Date.now() + 30 * 60 * 1000);
+            await this.save();
+            this.wrong_pin_attempts = 0;
+        }
+        await this.save();
+    }else{
+        this.wrong_pin_attempts = 0;
+        this.blocked_until_pin = null;
         await this.save();
     }
     return isMatch;

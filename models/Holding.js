@@ -9,7 +9,7 @@ const HoldingSchema = new mongoose.Schema({
     stock: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Stock",
-         required: true
+        required: true
     },
     quantity: {
         type: Number,
@@ -22,6 +22,6 @@ const HoldingSchema = new mongoose.Schema({
 });
 
 
-constHolding = mongoose.model("Holding", HoldingSchema);
+const Holding = mongoose.model("Holding", HoldingSchema);
 
 export default Holding;

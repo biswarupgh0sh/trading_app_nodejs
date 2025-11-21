@@ -37,6 +37,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
 
+
     if(!email || !password) {
         throw new BadRequestError("Please provide all the values.");
     }
@@ -45,6 +46,8 @@ const login = async (req, res) => {
     if(!user) {
         throw new UnauthenticatedError('Invalid credentials.');
     }
+
+
     const isPasswordCorrect = await user.comparePassword(password);
     if(!isPasswordCorrect) {
         let message;
