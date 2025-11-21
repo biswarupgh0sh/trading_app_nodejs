@@ -5,15 +5,13 @@ import inlineCss from 'inline-css';
 
 
 export const mailSender = async (email, otp, otp_type) => {
-
-
-    let htmlContent = fs.readFileSync('../otp_template.html', 'utf-8');
+    let htmlContent = fs.readFileSync('./otp_template.html', 'utf-8');
     htmlContent = htmlContent.replace('tradevault_otp', otp);
     htmlContent = htmlContent.replace('tradevault_otp2', otp_type);
 
 
     const options = {
-        url: '',
+        url: '  ',
     }
 
     htmlContent = await inlineCss(htmlContent, options);
@@ -46,6 +44,6 @@ export const mailSender = async (email, otp, otp_type) => {
 
 
 
-export const otpGenerator = () => {
+export const otpGeneratorFn = () => {
     return otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCasealphabets: false});
 }

@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import NodeRSA from "node-rsa";
-import BadRequestError from "../../errors/bad-request";
-import User from "../../models/User";
+import BadRequestError from "../../errors/bad-request.js";
+import User from "../../models/User.js";
 import { StatusCodes } from "http-status-codes";
-import UnauthenticatedError from "../../errors/unauthenticated";
+import UnauthenticatedError from "../../errors/unauthenticated.js";
 
 const uploadBiometrics = async (req, res) => {
     const { public_key } = req.body;
@@ -48,7 +48,7 @@ const verifyBiometricKey = async (req, res) => {
 
 
     return res.status(StatusCodes.OK).json({ success: true, socket_tokens: {
-        socket_access_token: accessToken,
+        socket_access_token: access_token,
         socket_refresh_token: refresh_token
     }});
 }

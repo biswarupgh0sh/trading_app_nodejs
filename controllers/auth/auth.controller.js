@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { BadRequestError, NotFoundError, UnauthenticatedError } from '../../errors.js';
+import { BadRequestError, NotFoundError, UnauthenticatedError } from '../../errors/index.js';
 import User from '../../models/User.js';
 import { StatusCodes } from 'http-status-codes';
 
 
 const register = async (req, res) => {
-    const { email, password, registered_token } = req.body;
+    const { email, password, register_token: registered_token } = req.body;
 
     if(!email || !password || !registered_token){
         throw new BadRequestError("Please provide all the details");
@@ -22,7 +22,7 @@ const register = async (req, res) => {
             throw new BadRequestError("Invalid registered token.");
         }
 
-        const newUser = new User({ email, password });
+        const newUser = await User.create({ email, password });
         const accessToken = newUser.createAccessToken();
         const refreshToken = newUser.createRefreshToken();
         return res.status(StatusCodes.CREATED).json({ user: { email: newUser?.email, userId: newUser?._id }, tokens: { accessToken, refreshToken }});
@@ -55,8 +55,8 @@ const login = async (req, res) => {
         }else {
             const attemptsLeft = 3 - user?.wrong_password_attempts;
             message = attemptsLeft > 0 ? `Invalid password, ${attemptsLeft} attempts remaining.` : 'Invalid login attempts exceeded. Please try after 30 minutes.';
-            throw new UnauthenticatedError(message);
         }
+        throw new UnauthenticatedError(message);
     }
 
 
@@ -85,7 +85,7 @@ const login = async (req, res) => {
 const refreshToken = async (req, res) => {
     const { type, refresh_token } = req.body;
 
-    if(!type || ["socket", "app"].includes(type) || !refresh_token){
+    if(!type || !["socket", "app"].includes(type) || !refresh_token){
         throw new BadRequestError("Invalid body");
     }
 
@@ -134,10 +134,11 @@ async function generateRefreshToken(token, refresh_secret, refresh_expiry, acces
         if(!user) {
             throw new NotFoundError("User not found.");
         }
-        const access_token = jwt.sign({ userId: payload.userId }, access_secret, { expiresIn: access_expiry });
-        const newRefreshToken = jwt.sign({ userId: payload.userId }, refresh_secret, { expiresIn: refresh_expiry });
-        return { access_token, refresh_token: newRefreshToken };
+        const access_token = jwt.sign({ userId: payload?.userId }, access_secret, { expiresIn: access_expiry });
+        const newRefreshToken = jwt.sign({ userId: payload?.userId }, refresh_secret, { expiresIn: refresh_expiry });
+        return { access_token, newRefreshToken };
     } catch (error) {
+        console.log(error)
         throw new UnauthenticatedError("Invalid token.");
     }
 }

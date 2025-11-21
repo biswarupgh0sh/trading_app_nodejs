@@ -10,7 +10,7 @@ import notFoundMiddleware from "./middleware/not-found.js"
 import errorHandlerMiddleware from "./middleware/error-handler.js"
 
 
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import notFound from "./middleware/not-found.js";
 import connectDb from "./config/connect.js";

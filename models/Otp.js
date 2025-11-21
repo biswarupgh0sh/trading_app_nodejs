@@ -40,7 +40,7 @@ OtpSchema.methods.comparOtp = async function (enteredOtp) {
 }
 
 
-async function sendVeificationEmail(email, otp, otp_type) {
+export async function sendVeificationEmail(email, otp, otp_type) {
     try {
         await mailSender(email, otp, otp_type);
     } catch (error) {
@@ -49,6 +49,6 @@ async function sendVeificationEmail(email, otp, otp_type) {
     }
 }
 
-const Otp = mongoose.model("otp", OtpSchema);
+const Otp = mongoose.model("Otp", OtpSchema);
 
 export default Otp;

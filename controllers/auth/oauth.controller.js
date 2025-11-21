@@ -1,16 +1,16 @@
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from "google-auth-library";
 import { JwksClient } from 'jwks-rsa';
-import BadRequestError from '../../errors/bad-request';
-import User from '../../models/User';
+import BadRequestError from '../../errors/bad-request.js';
+import User from '../../models/User.js';
 import { StatusCodes } from 'http-status-codes';
 
 
 
 
-const googleClient = OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const jwksClientInstance = JwksClient({
+const jwksClientInstance = new JwksClient({
     jwksUri: "https://appleid.apple.com/auth/keys",
     timeout: 30000, // 30 sec
 });
@@ -62,7 +62,7 @@ const signingWithOauth = async (req, res) => {
         let phone_exist = false;
         let login_pin_exist = false;
 
-        if(user?.phone) phone_exist = true;
+        if(user?.phone_number) phone_exist = true;
         if(user?.login_pin) login_pin_exist = true;
 
         return res.status(StatusCodes.OK).json({ 

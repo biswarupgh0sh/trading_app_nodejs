@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
-import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors.js';
+import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors/index.js';
 
 
 const UserSchema = new mongoose.Schema({
@@ -21,8 +21,6 @@ const UserSchema = new mongoose.Schema({
     },
     login_pin: {
         type: String,
-        minLength: 4,
-        maxLength: 4
     },
     phone_number: {
         type: String,

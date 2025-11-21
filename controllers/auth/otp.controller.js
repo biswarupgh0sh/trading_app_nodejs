@@ -1,15 +1,17 @@
 import jwt from 'jsonwebtoken';
-import BadRequestError from '../../errors/bad-request';
-import Otp from '../../models/Otp';
-import User from '../../models/User';
+import BadRequestError from '../../errors/bad-request.js';
+import Otp from '../../models/Otp.js';
+import User from '../../models/User.js';
 import { StatusCodes } from 'http-status-codes';
-import { otpGenerator } from '../../services/mailSender';
+import { otpGeneratorFn } from '../../services/mailSender.js';
 
 
 const verifyOtp = async (req, res) => {
     const { email, otp, otp_type, data } = req.body;
 
-    if(!email || !type || !otp_type){
+    console.log(email, otp, otp_type, data)
+
+    if(!email || !otp || !otp_type) {
         throw new BadRequestError("Please provide all values");
     } else if(otp_type !== 'email' && !data) {
         throw new BadRequestError("Please provide all values");
@@ -45,7 +47,8 @@ const verifyOtp = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-    if(otp_type === 'email' && !user){
+    console.log(otp_type === 'email' && !user)
+    if(otp_type === 'email' && !user) {
         const registered_token = jwt.sign({ email }, process.env.REGISTER_SECRET, { expiresIn: process.env.REGISTER_SECRET_EXPIRY });
         return res.status(StatusCodes.OK).json({ msg: "OTP verified successfully", registered_token });
     }
@@ -77,7 +80,7 @@ const sendOtp = async (req, res) => {
     }
 
 
-    const otp = otpGenerator();
+    const otp = otpGeneratorFn();
     const otpPayload = { email, otp, otp_type };
     await Otp.create(otpPayload);
     

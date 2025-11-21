@@ -1,20 +1,24 @@
 import { StatusCodes } from "http-status-codes";
-import BadRequestError from "../../errors/bad-request";
-import Otp from "../../models/Otp";
-import User from "../../models/User";
-import { otpGenerator } from "../../services/mailSender";
+import {BadRequestError} from "../../errors/index.js";
+import Otp from "../../models/Otp.js";
+import User from "../../models/User.js";
+import { otpGeneratorFn } from "../../services/mailSender.js";
 
 const checkEmail = async (req, res) => {
-    const { email } = req.body;
+    const { email } = req?.body;
 
-    if(!email) throw new BadRequestError("Email is required");
+    if(!email) {
+        throw new BadRequestError("Email is required");
+    }
 
     const user = await User.findOne({ email });
     let isExists = true;
 
+
     if (!user) {
-        const otp = otpGenerator();
-        await Otp.create({ email, otp, otp_type: "email" });
+        const otp = otpGeneratorFn();
+        const vol = await Otp.create({ email, otp, otp_type: "email" });
+        console.log(vol)
         isExists = false;
     }
 
