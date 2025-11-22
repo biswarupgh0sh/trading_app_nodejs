@@ -1,5 +1,5 @@
-import { NotFoundError } from "../errors";
-import Stock from "../models/Stock";
+import { NotFoundError } from "../errors/index.js";
+import Stock from "../models/Stock.js";
 
 const roundToTwoDecimals = (num) => {
     return Math.round((num + Number.EPSILON) * 100) / 100;

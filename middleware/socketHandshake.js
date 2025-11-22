@@ -20,6 +20,9 @@ const authenticateSocketUser = async (socket, next) => {
         socket.user = user;
         next();
     } catch (error) {
-        throw new UnauthenticatedError("Authentication failed");
+        next(new UnauthenticatedError("Authentication error"));
     }
 }
+
+
+export default authenticateSocketUser;

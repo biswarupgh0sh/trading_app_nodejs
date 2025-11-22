@@ -1,6 +1,6 @@
 import cron from "node-cron";
-import Stock from "../models/Stock";
-import { generateStockData, store10Min } from "./stockUtils";
+import Stock from "../models/Stock.js";
+import { generateStockData, store10Min } from "./stockUtils.js";
 
 
 const holidays = ["2025-08-24", "2025-08-31"];
